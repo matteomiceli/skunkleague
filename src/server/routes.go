@@ -11,8 +11,11 @@ func InitializeRoutes() {
 
 	r.GET("/", func(ctx *gin.Context) {
 		db.GetAllPlayers()
-		
 		ctx.JSON(200, map[string]string{"hi": "hi"})
+	})
+
+	r.POST("/players/add", func(ctx *gin.Context) {
+		//db.AddPlayer()
 	})
 	
 	r.Run()

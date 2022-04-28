@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -11,6 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+type Player struct {
+	Name string
+}
 
 var Players *mongo.Collection 
 var Games *mongo.Collection 
@@ -51,6 +56,14 @@ func GetAllPlayers() []primitive.M {
 	}
 
 	return players
+}
+
+func AddPlayer(name string) {
+	result, err := Players.InsertOne(DbContext, Player{Name: name})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result)
 }
 
 func Disconnect() {
