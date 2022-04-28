@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	db "github.com/matteomiceli/skunkleague/src/database"
+	db "main/src/database"
+	routes "main/src/server"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -15,14 +15,6 @@ func main () {
 	if err != nil {
         log.Fatal("Error loading .env file")
     }
-
 	db.Init()
-
-	r := gin.Default()
-
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, map[string]string{"hi": "hi"})
-	})
-	
-	r.Run()
+	routes.InitializeRoutes()
 }
