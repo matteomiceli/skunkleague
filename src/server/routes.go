@@ -10,7 +10,12 @@ import (
 )
 
 type ReqNewPlayer struct {
-	Name string
+	Player db.Player
+	AccessCode int
+}
+
+type ReqNewGame struct {
+	Game db.Game
 	AccessCode int
 }
 
@@ -45,8 +50,8 @@ func InitializeRoutes() {
 			log.Fatal(err)
 		}
 
-		db.AddNewPlayer(newPlayer.Name)
-		ctx.String(http.StatusOK, "New Player " + newPlayer.Name + " added!")
+		db.CreatePlayer(newPlayer.Player)
+		ctx.String(http.StatusOK, "New Player " + newPlayer.Player.Alias + " added!")
 	})
 
 
@@ -56,6 +61,16 @@ func InitializeRoutes() {
 	})
 
 
-	
+	r.POST("/games/add", func(ctx *gin.Context) {
+		var newGame ReqNewGame
+
+		if err := ctx.BindJSON(&newGame); err != nil {
+			log.Fatal(err)
+		}
+
+		db.CreateGame(newGame.Game)
+	})
+
+
 	r.Run()
 }
