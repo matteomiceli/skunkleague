@@ -21,7 +21,6 @@ type Player struct {
 
 var Players *mongo.Collection 
 var Games *mongo.Collection 
-var DbContext context.Context
 var client *mongo.Client
 
 func Init() {
@@ -32,9 +31,7 @@ func Init() {
 
 	client = c
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	DbContext = ctx
-	defer cancel()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 	err = client.Connect(ctx)
 	if err != nil {
@@ -47,14 +44,15 @@ func Init() {
 }
 
 func GetAllPlayers() []primitive.M {
-	cur, err := Players.Find(DbContext, bson.D{{}})
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	cur, err := Players.Find(ctx, bson.D{{}})
 	if err !=nil {
 		log.Fatal(err)
 	}
 
 	var players []bson.M
 	
-	if err = cur.All(DbContext, &players); err != nil {
+	if err = cur.All(ctx, &players); err != nil {
 		log.Fatal(err)
 	}
 
@@ -62,7 +60,8 @@ func GetAllPlayers() []primitive.M {
 }
 
 func AddNewPlayer(name string) {
-	result, err := Players.InsertOne(DbContext, Player{Name: name})
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	result, err := Players.InsertOne(ctx, Player{Name: name})
 	if err != nil {
 		panic(err)
 	}
@@ -70,5 +69,6 @@ func AddNewPlayer(name string) {
 }
 
 func Disconnect() {
-	client.Disconnect(DbContext)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client.Disconnect(ctx)
 }
