@@ -15,6 +15,8 @@ import (
 
 type Player struct {
 	Name string
+	// wins + losses
+	// 
 }
 
 var Players *mongo.Collection 
@@ -30,8 +32,9 @@ func Init() {
 
 	client = c
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	DbContext = ctx
+	defer cancel()
 
 	err = client.Connect(ctx)
 	if err != nil {
@@ -58,7 +61,7 @@ func GetAllPlayers() []primitive.M {
 	return players
 }
 
-func AddPlayer(name string) {
+func AddNewPlayer(name string) {
 	result, err := Players.InsertOne(DbContext, Player{Name: name})
 	if err != nil {
 		panic(err)
