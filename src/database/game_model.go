@@ -52,3 +52,7 @@ func CreateGame(game Game) {
 
 	fmt.Println(result)
 }
+
+func FinalizeGameResult(id primitive.ObjectID) {
+	
+}
