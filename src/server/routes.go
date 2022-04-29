@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"log"
 	db "main/src/database"
 	"net/http"
@@ -16,7 +17,7 @@ type ReqNewPlayer struct {
 func InitializeRoutes() {
 	r := gin.Default()
 
-	
+
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.String(200, "Hi there")
 	})
@@ -25,6 +26,15 @@ func InitializeRoutes() {
 	r.GET("/players", func(ctx *gin.Context) {
 		players := db.GetAllPlayers()
 		ctx.JSON(200, players)
+	})
+
+	r.GET("/players/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+
+		player := db.GetPlayerById(id)
+		fmt.Println(player)
+
+		ctx.JSON(200, player)
 	})
 
 
@@ -38,6 +48,14 @@ func InitializeRoutes() {
 		db.AddNewPlayer(newPlayer.Name)
 		ctx.String(http.StatusOK, "New Player " + newPlayer.Name + " added!")
 	})
+
+
+	r.GET("/games", func(ctx *gin.Context) {
+		games := db.GetAllGames()
+		ctx.JSON(200, games)
+	})
+
+
 	
 	r.Run()
 }
