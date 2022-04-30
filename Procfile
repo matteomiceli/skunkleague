@@ -1,1 +1,1 @@
-web: ./dist/main
+web: ./bin/main
