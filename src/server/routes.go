@@ -6,6 +6,7 @@ import (
 	db "main/src/database"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +22,7 @@ type ReqNewGame struct {
 
 func InitializeRoutes() {
 	r := gin.Default()
+	r.Use(cors.Default())
 
 
 	r.GET("/", func(ctx *gin.Context) {
