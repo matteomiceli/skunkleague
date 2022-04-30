@@ -72,5 +72,16 @@ func InitializeRoutes() {
 	})
 
 
+	r.PATCH("/games/result", func(ctx *gin.Context) {
+		var gameResult db.GameResult
+
+		if err := ctx.BindJSON(&gameResult); err != nil {
+			log.Fatal(err)
+		}
+
+		db.FinalizeGameResult(gameResult)
+	})
+
+
 	r.Run()
 }

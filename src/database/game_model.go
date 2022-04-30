@@ -23,6 +23,12 @@ type PlayerResults struct {
 	Points int 
 }
 
+type GameResult struct {
+	GameID primitive.ObjectID
+	Winner primitive.ObjectID
+	Players [2]PlayerResults	
+}
+
 func GetAllGames() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -53,6 +59,27 @@ func CreateGame(game Game) {
 	fmt.Println(result)
 }
 
-func FinalizeGameResult(id primitive.ObjectID) {
-	
+func FinalizeGameResult(gameResult GameResult) {
+	player1 := gameResult.Players[0]
+	player2 := gameResult.Players[1]
+
+	UpdateGame(gameResult)
+
+	if player1.ID == gameResult.Winner {
+		IncrementPlayerRecord(player1.ID, true, player1.Points)
+		IncrementPlayerRecord(player2.ID, false, player2.Points)
+	} else {
+		IncrementPlayerRecord(player1.ID, false, player1.Points)
+		IncrementPlayerRecord(player2.ID, true, player2.Points)
+	}
+}
+
+func UpdateGame(gameResult GameResult) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := Games.UpdateOne(ctx, bson.M{"_id": gameResult.GameID}, bson.M{"$set": bson.M{"winner": gameResult.Winner, "players": gameResult.Players}})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
