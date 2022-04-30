@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	db "main/src/database"
+	static "main/src/static"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -26,7 +27,7 @@ func InitializeRoutes() {
 
 
 	r.GET("/", func(ctx *gin.Context) {
-		ctx.String(200, "Hi there")
+		ctx.String(200, static.Welcome)
 	})
 
 
