@@ -13,12 +13,12 @@ import (
 
 type ReqNewPlayer struct {
 	Player db.Player
-	AccessCode int
+	AccessCode string 
 }
 
 type ReqNewGame struct {
 	Game db.Game
-	AccessCode int
+	AccessCode string 
 }
 
 func InitializeRoutes() {

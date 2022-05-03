@@ -20,6 +20,7 @@ type Game struct {
 
 type PlayerResults struct {
 	ID primitive.ObjectID
+	Alias string
 	Points int 
 }
 
