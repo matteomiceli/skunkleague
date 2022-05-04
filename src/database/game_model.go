@@ -40,7 +40,7 @@ func GetAllGames() []primitive.M {
 	}
 
 	var games []bson.M
-	
+		
 	if err = cur.All(ctx, &games); err != nil {
 		log.Fatal(err)
 	}

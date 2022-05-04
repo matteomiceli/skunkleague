@@ -6,6 +6,7 @@ import (
 	db "main/src/database"
 	static "main/src/static"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,11 @@ type ReqNewPlayer struct {
 type ReqNewGame struct {
 	Game db.Game
 	AccessCode string 
+}
+
+type ReqGameResult struct {
+	Game db.GameResult
+	AccessCode string
 }
 
 func InitializeRoutes() {
@@ -53,8 +59,12 @@ func InitializeRoutes() {
 			log.Fatal(err)
 		}
 
-		db.CreatePlayer(newPlayer.Player)
-		ctx.String(http.StatusOK, "New Player " + newPlayer.Player.Alias + " added!")
+		if newPlayer.AccessCode == os.Getenv("ACCESS_CODE") {
+			db.CreatePlayer(newPlayer.Player)
+			ctx.String(http.StatusOK, "New Player " + newPlayer.Player.Alias + " added!")
+		} else {
+			ctx.Status(http.StatusUnauthorized)
+		}
 	})
 
 
@@ -71,18 +81,28 @@ func InitializeRoutes() {
 			log.Fatal(err)
 		}
 
-		db.CreateGame(newGame.Game)
+		if newGame.AccessCode == os.Getenv("ACCESS_CODE") {
+			db.CreateGame(newGame.Game)
+			ctx.String(http.StatusOK, "New game created!")
+		} else {
+			ctx.Status(http.StatusUnauthorized)
+		}
 	})
 
 
 	r.PATCH("/games/result", func(ctx *gin.Context) {
-		var gameResult db.GameResult
+		var gameResult ReqGameResult
 
 		if err := ctx.BindJSON(&gameResult); err != nil {
 			log.Fatal(err)
 		}
 
-		db.FinalizeGameResult(gameResult)
+		if gameResult.AccessCode == os.Getenv("ACCESS_CODE") {
+			db.FinalizeGameResult(gameResult.Game)
+			ctx.String(http.StatusOK, "Game results reported!")
+		} else {
+			ctx.Status(http.StatusUnauthorized)
+		}
 	})
 
 
