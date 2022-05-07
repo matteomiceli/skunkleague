@@ -81,7 +81,7 @@ func InitializeRoutes() {
 			log.Fatal(err)
 		}
 
-		if newGame.AccessCode == os.Getenv("ACCESS_CODE") {
+		if newGame.AccessCode == os.Getenv("ADMIN_CODE") {
 			db.CreateGame(newGame.Game)
 			ctx.String(http.StatusOK, "New game created!")
 		} else {
