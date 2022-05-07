@@ -14,7 +14,7 @@ type Game struct {
 	ID primitive.ObjectID `bson:"_id,omitempty"`
 	Players [2]PlayerResults 
 	Winner primitive.ObjectID `bson:"winner,omitempty"`
-	Time primitive.Timestamp
+	Time time.Time
 	Round int
 }
 
@@ -51,6 +51,8 @@ func GetAllGames() []primitive.M {
 func CreateGame(game Game) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	game.Time = time.Now()
 
 	result, err := Games.InsertOne(ctx, game)
 	if err != nil {
