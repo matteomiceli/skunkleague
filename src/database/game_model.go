@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Game struct {
@@ -34,7 +35,7 @@ func GetAllGames() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cur, err := Games.Find(ctx, bson.D{{}})
+	cur, err := Games.Find(ctx, bson.D{{}}, options.Find().SetSort(bson.M{"time": -1}))
 	if err !=nil {
 		log.Fatal(err)
 	}
@@ -94,7 +95,7 @@ func GetPlayerMatchHistory(id string) []primitive.M {
 	objID, _ := primitive.ObjectIDFromHex(id)
 	fmt.Print(objID)
 
-	cur, err := Games.Find(ctx, bson.M{"players": bson.M{"$elemMatch": bson.M{"id": objID}}})
+	cur, err := Games.Find(ctx, bson.M{"players": bson.M{"$elemMatch": bson.M{"id": objID}}}, options.Find().SetSort(bson.M{"time": -1}))
 	if err !=nil {
 		log.Fatal(err)
 	}
