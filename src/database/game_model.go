@@ -86,3 +86,23 @@ func UpdateGame(gameResult GameResult) {
 		log.Fatal(err)
 	}
 }
+
+func GetPlayerMatchHistory(id string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	objID, _ := primitive.ObjectIDFromHex(id)
+	fmt.Print(objID)
+
+	cur, err := Games.Find(ctx, bson.M{"players": bson.M{"$elemMatch": bson.M{"id": objID}}})
+	if err !=nil {
+		log.Fatal(err)
+	}
+
+	var games []bson.M 
+	if err := cur.All(ctx, &games); err != nil {fmt.Println(err)}
+
+	fmt.Print(games)
+
+	return games
+}

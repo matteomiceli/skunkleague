@@ -51,6 +51,13 @@ func InitializeRoutes() {
 		ctx.JSON(200, player)
 	})
 
+	r.GET("/players/:id/games", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+
+		games := db.GetPlayerMatchHistory(id)
+
+		ctx.JSON(200, games)
+	})
 
 	r.POST("/players/add", func(ctx *gin.Context) {
 		var newPlayer ReqNewPlayer
